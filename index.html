@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Quantum Cell — A Journey Across 29 Orders of Magnitude</title>
+  <meta name="description" content="A breathtaking, scientifically accurate journey from a living bacterial cell down through DNA, atomic orbitals, and into quantum vacuum fluctuations.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Cinematic Intro Overlay -->
+  <div id="intro-overlay">
+    <div class="intro-content">
+      <div class="intro-badge">⟨ SCIENTIFIC VISUALIZATION ⟩</div>
+      <h1 class="intro-title">THE QUANTUM CELL</h1>
+      <div class="intro-subtitle-line"></div>
+      <p class="intro-subtitle">A Journey Through 29 Orders of Magnitude</p>
+      <p class="intro-desc">From a living <em>Escherichia coli</em> bacterium to the quantum fabric of spacetime</p>
+      <div class="intro-scale-preview">
+        <span>10⁻⁶ m</span>
+        <div class="intro-scale-line"><div class="intro-scale-dot"></div></div>
+        <span>10⁻³⁵ m</span>
+      </div>
+      <button id="start-btn" class="intro-start-btn">
+        <svg viewBox="0 0 24 24" width="20" height="20"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>
+        Begin Journey
+      </button>
+      <p class="intro-hint">Click or press any key to begin</p>
+    </div>
+    <div class="intro-particles" id="intro-particles"></div>
+  </div>
+
+  <!-- 3D WebGL Canvas Viewport -->
+  <div id="canvas-container">
+    <canvas id="webgl-canvas"></canvas>
+  </div>
+
+  <!-- Annotation Labels Overlay (Leader Lines + Labels) -->
+  <canvas id="annotation-canvas"></canvas>
+  <div id="annotations-layer">
+    <!-- Cell Scale Annotations -->
+    <div class="annotation-label" id="label-membrane" data-anchor="membrane">
+      <span class="annotation-dot"></span>
+      <span class="annotation-text">OUTER MEMBRANE ENVELOPE</span>
+    </div>
+    <div class="annotation-label" id="label-flagella" data-anchor="flagella">
+      <span class="annotation-dot"></span>
+      <span class="annotation-text">FLAGELLA</span>
+    </div>
+    <div class="annotation-label" id="label-ribosomes" data-anchor="ribosomes">
+      <span class="annotation-dot"></span>
+      <span class="annotation-text">RIBOSOMES</span>
+    </div>
+    <div class="annotation-label" id="label-nucleoid" data-anchor="nucleoid">
+      <span class="annotation-dot"></span>
+      <span class="annotation-text">NUCLEOID / THE DNA</span>
+    </div>
+    <div class="annotation-label" id="label-pili" data-anchor="pili">
+      <span class="annotation-dot"></span>
+      <span class="annotation-text">TYPE IV PILI</span>
+    </div>
+    <!-- Nucleoid Scale Annotations -->
+    <div class="annotation-label" id="label-70s" data-anchor="70s">
+      <span class="annotation-dot"></span>
+      <span class="annotation-text">70S RIBOSOME</span>
+    </div>
+    <div class="annotation-label" id="label-mrna" data-anchor="mrna">
+      <span class="annotation-dot"></span>
+      <span class="annotation-text">mRNA TRANSCRIPT</span>
+    </div>
+    <div class="annotation-label" id="label-groel" data-anchor="groel">
+      <span class="annotation-dot"></span>
+      <span class="annotation-text">GroEL / GroES</span>
+    </div>
+    <!-- DNA Scale Annotations -->
+    <div class="annotation-label" id="label-backbone" data-anchor="backbone">
+      <span class="annotation-dot"></span>
+      <span class="annotation-text">SUGAR-PHOSPHATE BACKBONE</span>
+    </div>
+    <div class="annotation-label" id="label-basepair" data-anchor="basepair">
+      <span class="annotation-dot"></span>
+      <span class="annotation-text">BASE PAIR (A-T)</span>
+    </div>
+    <div class="annotation-label" id="label-hbond" data-anchor="hbond">
+      <span class="annotation-dot"></span>
+      <span class="annotation-text">HYDROGEN BONDS</span>
+    </div>
+    <!-- Atomic Scale Annotations -->
+    <div class="annotation-label" id="label-orbital" data-anchor="orbital">
+      <span class="annotation-dot"></span>
+      <span class="annotation-text">2p_z ELECTRON ORBITAL</span>
+    </div>
+    <div class="annotation-label" id="label-nucleus" data-anchor="nucleus">
+      <span class="annotation-dot"></span>
+      <span class="annotation-text">ATOMIC NUCLEUS</span>
+    </div>
+    <!-- Quantum Scale Annotations -->
+    <div class="annotation-label" id="label-virtual" data-anchor="virtual">
+      <span class="annotation-dot"></span>
+      <span class="annotation-text">VIRTUAL PARTICLE PAIR</span>
+    </div>
+    <div class="annotation-label" id="label-foam" data-anchor="foam">
+      <span class="annotation-dot"></span>
+      <span class="annotation-text">SPACETIME FOAM</span>
+    </div>
+  </div>
+
+  <!-- Bottom-Left Scientific Description Panel -->
+  <div id="sci-description">
+    <div id="sci-scale-badge" class="sci-scale-badge">10⁻⁶ M · MICROMETRES</div>
+    <h2 id="sci-title" class="sci-title">Escherichia coli</h2>
+    <p id="sci-body" class="sci-body">One cell about 2 µm long; fifty of them would span the width of a human hair. It swims by spinning a bundle of helical flagella, each turned by a rotary motor at around 100 revolutions per second. Inside: a tangle of DNA called the nucleoid.</p>
+  </div>
+
+  <!-- Depth Scale Indicator (Left Sidebar) -->
+  <div id="depth-indicator">
+    <div class="depth-track">
+      <div class="depth-marker" id="depth-marker"></div>
+      <div class="depth-notch" data-label="Cell" style="top: 5%"></div>
+      <div class="depth-notch" data-label="Nucleoid" style="top: 28%"></div>
+      <div class="depth-notch" data-label="DNA" style="top: 52%"></div>
+      <div class="depth-notch" data-label="Atoms" style="top: 75%"></div>
+      <div class="depth-notch" data-label="Planck" style="top: 95%"></div>
+    </div>
+    <div class="depth-labels">
+      <span class="depth-top-label">10⁻⁶ m</span>
+      <span class="depth-bot-label">10⁻³⁵ m</span>
+    </div>
+  </div>
+
+  <!-- Top-Left Branding & Title HUD -->
+  <header id="hud-header">
+    <div class="logo-badge">Scientific Visualization Engine</div>
+    <h1 class="main-title">THE QUANTUM CELL</h1>
+    <p class="subtitle">From Living Bacilli to the Fabric of Spacetime Foam</p>
+  </header>
+
+  <!-- Top-Center Metric Scale Telemetry -->
+  <div id="scale-telemetry" class="glass-panel">
+    <div class="scale-label">Current Scale • SI Order of Magnitude</div>
+    <div id="scale-value-text" class="scale-value">1.0 × 10⁻⁶ m</div>
+    <div id="scale-comparison-text" class="scale-comparison">Size of rod-shaped bacillus (E. coli)</div>
+  </div>
+
+  <!-- Top-Right Audio & View Controls -->
+  <aside id="hud-top-right">
+    <button id="audio-btn" class="hud-btn" title="Toggle Procedural Ambient Soundscape (M)">
+      <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      <span>Sound Off</span>
+    </button>
+  </aside>
+
+  <!-- Floating Scientific Dossier (Right Panel) -->
+  <section id="info-card" class="glass-panel" aria-label="Scientific Details">
+    <div id="card-category" class="card-category">Cellular Scale • 10⁻⁶ m</div>
+    <h2 id="card-title" class="card-title">Bacterial Cell Envelope</h2>
+    <div id="card-metric" class="card-metric">1.0 × 10⁻⁶ m (1 µm)</div>
+    <p id="card-body" class="card-body">
+      A self-contained biological engine enclosed by a peptidoglycan cell wall and outer lipopolysaccharide membrane. Helical flagella rotate at 20,000 RPM driven by transmembrane proton-motive force.
+    </p>
+    <div id="card-equation" class="card-equation">v_d ≈ μ · E  (Proton-Motive Drift)</div>
+    <div id="card-specs" class="card-specs">
+      <!-- Populated dynamically via main.js -->
+    </div>
+  </section>
+
+  <!-- Notification Toast -->
+  <div id="toast" role="status">Cinematic Tour Started</div>
+
+  <!-- Bottom Navigation & Playback HUD -->
+  <nav id="bottom-hud" class="glass-panel" aria-label="Navigation Controls">
+    <!-- 5 Stage Quick Jump Pills -->
+    <div class="stage-pills">
+      <button class="stage-pill active" data-index="0">
+        <span class="pill-icon">🦠</span>
+        <span class="pill-num">SCALE 01</span>
+        <span class="pill-title">Bacterium</span>
+        <span class="pill-order">10⁻⁶ m</span>
+      </button>
+      <button class="stage-pill" data-index="1">
+        <span class="pill-icon">🧬</span>
+        <span class="pill-num">SCALE 02</span>
+        <span class="pill-title">Cytoplasm & Nucleoid</span>
+        <span class="pill-order">10⁻⁷ m</span>
+      </button>
+      <button class="stage-pill" data-index="2">
+        <span class="pill-icon">🔬</span>
+        <span class="pill-num">SCALE 03</span>
+        <span class="pill-title">DNA Double Helix</span>
+        <span class="pill-order">10⁻⁹ m</span>
+      </button>
+      <button class="stage-pill" data-index="3">
+        <span class="pill-icon">⚛️</span>
+        <span class="pill-num">SCALE 04</span>
+        <span class="pill-title">Atomic Orbitals</span>
+        <span class="pill-order">10⁻¹⁰ m</span>
+      </button>
+      <button class="stage-pill" data-index="4">
+        <span class="pill-icon">✨</span>
+        <span class="pill-num">SCALE 05</span>
+        <span class="pill-title">Quantum Foam</span>
+        <span class="pill-order">10⁻³⁵ m</span>
+      </button>
+    </div>
+
+    <!-- Continuous Exponential Zoom Scrubber -->
+    <div class="slider-container">
+      <span class="slider-endpoint">10⁻⁶ m (1 µm)</span>
+      <input type="range" id="zoom-range" class="custom-range" min="0" max="1" step="0.001" value="0.05" aria-label="Zoom scale slider">
+      <span class="slider-endpoint right">10⁻³⁵ m (Planck)</span>
+    </div>
+
+    <!-- Playback Control Toolbar -->
+    <div class="playback-bar">
+      <div class="playback-controls">
+        <button id="play-tour-btn" class="play-tour-btn">
+          <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+          <span>Pause Tour</span>
+        </button>
+
+        <select id="tour-speed" class="speed-select" aria-label="Tour Speed">
+          <option value="0.3">0.3× Slow</option>
+          <option value="0.5">0.5× Speed</option>
+          <option value="1.0" selected>1.0× Speed</option>
+          <option value="2.0">2.0× Speed</option>
+          <option value="4.0">4.0× Fast</option>
+        </select>
+      </div>
+
+      <div class="playback-hints">
+        <div class="hint-item"><span class="key-kbd">Space</span> Play/Pause</div>
+        <div class="hint-item"><span class="key-kbd">Scroll</span> Continuous Zoom</div>
+        <div class="hint-item"><span class="key-kbd">Drag</span> Orbit 3D</div>
+        <div class="hint-item"><span class="key-kbd">1-5</span> Direct Scales</div>
+        <div class="hint-item"><span class="key-kbd">M</span> Audio</div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Core Three.js & Post-Processing Libraries (Local with fallback) -->
+  <script src="three.min.js"></script>
+  <script src="OrbitControls.js"></script>
+  <script src="EffectComposer.js"></script>
+  <script src="RenderPass.js"></script>
+  <script src="ShaderPass.js"></script>
+  <script src="CopyShader.js"></script>
+  <script src="LuminosityHighPassShader.js"></script>
+  <script src="UnrealBloomPass.js"></script>
+
+  <!-- Application Logic -->
+  <script src="audio.js"></script>
+  <script src="shaders.js"></script>
+  <script src="scales.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
